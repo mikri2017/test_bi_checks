@@ -3,6 +3,7 @@ from urllib import parse
 import json
 from decimal import Decimal
 from datetime import datetime
+from sales_mgr import SalesMgr
 
 class GetHandler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -11,6 +12,8 @@ class GetHandler(BaseHTTPRequestHandler):
         res = {
             'res': "ok"
         }
+
+        sales_mgr = SalesMgr()
 
         parsed_path = parse.urlparse(self.path)
         command = parsed_path.path
@@ -37,6 +40,10 @@ class GetHandler(BaseHTTPRequestHandler):
             if res['res'] == "ok":
                 if check_sum > 0:
                     res['sum'] = str(check_sum)
+                    res_add = sales_mgr.add_sale(check_sum)
+                    if res_add == False:
+                        res['res'] = "err"
+                        res['msg'] = sales_mgr.get_last_error()
                 else:
                     res['res'] = "err"
                     res['msg'] = "Сумма проджажи должна быть больше нуля"
