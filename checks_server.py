@@ -4,9 +4,12 @@ from ntpath import join
 from urllib import parse
 import json
 from decimal import Decimal
+from datetime import datetime
 
 class GetHandler(BaseHTTPRequestHandler):
     def do_GET(self):
+        """ Обработка GET запроса
+        """
         res = {
             'res': "ok"
         }
@@ -17,19 +20,21 @@ class GetHandler(BaseHTTPRequestHandler):
             check_sum = 0
             params = parsed_path.query.split("&")
             for param in params:
-                data = param.split("=")
-                if data[0] == "sum":
-                    if len(data) == 2:
-                        data[1] = data[1].replace(',','.').strip()
+                param_data = param.split("=")
+                if param_data[0] == "sum":
+                    if len(param_data) == 2:
+                        param_data[1] = param_data[1].replace(',','.').strip()
                         try:
-                            check_sum = Decimal(data[1].replace(',','.'))
+                            check_sum = Decimal(param_data[1].replace(',','.'))
                         except Exception as ex:
                             res['res'] = "err"
                             res['msg'] = "Передано некорректное значение параметра " \
-                                + "sum: %s, текст ошибки: %s" % (data[1], str(ex))
+                                + "sum: %s, текст ошибки: %s" % (param_data[1], str(ex))
+                            break
                     else:
                         res['res'] = "err"
                         res['msg'] = "Параметр передан некорректно (sum)"
+                        break
 
             if res['res'] == "ok":
                 if check_sum > 0:
@@ -38,7 +43,38 @@ class GetHandler(BaseHTTPRequestHandler):
                     res['res'] = "err"
                     res['msg'] = "Сумма проджажи должна быть больше нуля"
         elif command == '/get_sale_stat':
-            res['msg'] = "Получить статистику продаж"
+            data = {}
+            params_list = ["date_begin", "date_end"]
+
+            params = parsed_path.query.split("&")
+            for param in params:
+                param_data = param.split("=")
+                if param_data[0] in params_list:
+                    if len(param_data) == 2:
+                        try:
+                            data[param_data[0]] = datetime.strptime(param_data[1], "%Y-%m-%d")
+                        except ValueError:
+                            res['res'] = "err"
+                            res['msg'] = "Параметр передан некорректно (%s)" % (
+                                param_data[0]
+                            )
+                            break
+                    else:
+                        res['res'] = "err"
+                        res['msg'] = "Параметр передан некорректно (%s)" % (
+                            param_data[0]
+                        )
+                        break
+
+            if res['res'] == "ok":
+                if len(data) == 2:
+                    res['msg'] = "Начало: %s, Конец: %s" % (
+                        data['date_begin'].strftime("%Y-%m-%d"),
+                        data['date_end'].strftime("%Y-%m-%d")
+                    )
+                else:
+                    res['res'] = "err"
+                    res['msg'] = "Переданы не все требуемые параметры"
         else:
             res['res'] = "err"
             res['msg'] = "Неизвестная команда"
