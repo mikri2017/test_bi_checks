@@ -71,6 +71,7 @@ class SalesMgr():
             return False
 
         query = """select
+                    ch.id,
                     ch.date,
                     ch.sum
                 from checks ch
@@ -87,8 +88,9 @@ class SalesMgr():
             while row:
                 items.append(
                     {
-                        'date': row[0].strftime("%Y-%m-%d %H:%M:%S"),
-                        'sum': float(row[1])
+                        'id': row[0],
+                        'date': row[1].strftime("%Y-%m-%d %H:%M:%S"),
+                        'sum': float(row[2])
                     }
                 )
 
