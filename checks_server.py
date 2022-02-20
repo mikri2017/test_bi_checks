@@ -73,10 +73,16 @@ class GetHandler(BaseHTTPRequestHandler):
 
             if res['res'] == "ok":
                 if len(data) == 2:
-                    res['msg'] = "Начало: %s, Конец: %s" % (
-                        data['date_begin'].strftime("%Y-%m-%d"),
-                        data['date_end'].strftime("%Y-%m-%d")
+                    items = sales_mgr.get_sales_stat(
+                        data['date_begin'],
+                        data['date_end']
                     )
+
+                    if isinstance(items, bool) and not items:
+                        res['res'] = "err"
+                        res['msg'] = sales_mgr.get_last_error()
+                    else:
+                        res['items'] = items
                 else:
                     res['res'] = "err"
                     res['msg'] = "Переданы не все требуемые параметры"

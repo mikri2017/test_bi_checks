@@ -54,8 +54,8 @@ class SalesMgr():
                 self.__cursor.execute(query.encode('utf8'))
                 self.__conn.commit()
             except MySQLdb.Error as error:
-                self.__error_msg = "Ошибка при попытке внести в БД продажу"
-                self.__error_msg = self.__error_msg + "{}".format(error)
+                self.__error_msg = "Ошибка при попытке внести в БД продажу" \
+                    + "{}".format(error)
                 return False
 
             self.__close_connection()
@@ -67,5 +67,35 @@ class SalesMgr():
 
 
     def get_sales_stat(self, date_begin, date_end):
-        pass
+        if not self.__connect_to_base():
+            return False
 
+        query = """select
+                    ch.date,
+                    ch.sum
+                from checks ch
+                where ch.date between '%s 00:00:00' AND '%s 23:59:59';""" % (
+                    date_begin.strftime("%Y-%m-%d"),
+                    date_end.strftime("%Y-%m-%d")
+                )
+
+        items = []
+        try:
+            self.__cursor.execute(query)
+
+            row = self.__cursor.fetchone()
+            while row:
+                items.append(
+                    {
+                        'date': row[0].strftime("%Y-%m-%d %H:%M:%S"),
+                        'sum': float(row[1])
+                    }
+                )
+
+                row = self.__cursor.fetchone()
+        except MySQLdb.Error as error:
+            self.__error_msg = "Ошибка при попытке получить данные из БД: " \
+                    + "{}".format(error)
+            return False
+
+        return items
