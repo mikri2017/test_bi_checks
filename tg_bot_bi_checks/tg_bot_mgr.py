@@ -1,3 +1,4 @@
+import json
 import requests
 
 class TgBotMgr():
@@ -44,8 +45,27 @@ class TgBotMgr():
         return res.json()
 
 
-    def send_msg(self, chat_id, msg):
+    def send_msg(self, chat_id, msg, buttons = []):
+        """Отправка сообщения
+
+            :param chat_id: ID чата для отправки
+            :param msg: Текст сообщения
+            :param buttons: Массив словарей для добавления к сообщению кнопок,
+                            поля 'text' - подпись кнопки,
+                            'callback_data' - идентификатор до 64 байт, для
+                            опознания запрошенного пользователем действия
+            :return: Словарь результатов
+        """
+
         params = "chat_id=%i&text=%s" % (chat_id, msg)
+
+        inl_buttons = {
+            'inline_keyboard': [
+                buttons
+            ]
+        }
+
+        params += "&reply_markup=" + json.dumps(inl_buttons)
 
         req_url = "%s%s/sendMessage?%s" % (
             self.__tg_api_url,
