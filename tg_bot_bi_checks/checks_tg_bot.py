@@ -37,12 +37,7 @@ while 1:
                 # Обработка обновления
                 res = chc.check_tg_upd_data(upd)
                 if res['type'] == "msg":
-                    if res['data']['msg'] == "/start":
-                        res_msg = chc.send_bot_hello_msg(
-                            tg_bot,
-                            res['data']['chat_id']
-                        )
-                    elif res['data']['chat_id'] in users_stat.keys():
+                    if res['data']['chat_id'] in users_stat.keys():
                         status = users_stat[res['data']['chat_id']]
                         if status == 0:
                             # Пришла сумма продажи
@@ -106,9 +101,10 @@ while 1:
 
                         del(users_stat[res['data']['chat_id']])
                     else:
-                        info_msg = "Сообщение не опознано, для выбора действия, " \
-                            + "нажмите кнопку"
-                        tg_bot.send_msg(res['data']['chat_id'], info_msg)
+                        if res['data']['msg'] != "/start":
+                            info_msg = "Сообщение не опознано, для выбора " \
+                                + "действия, нажмите кнопку"
+                            tg_bot.send_msg(res['data']['chat_id'], info_msg)
 
                     res_msg = chc.send_bot_hello_msg(
                         tg_bot,
