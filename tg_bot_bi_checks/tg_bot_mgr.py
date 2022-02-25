@@ -1,5 +1,6 @@
 import json
 import requests
+import urllib3
 
 class TgBotMgr():
     def __init__(self):
