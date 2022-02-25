@@ -49,7 +49,7 @@ def add_check(bi_checks_host, sum):
     url = "http://%s/add_check?sum=%s" % (bi_checks_host, str(sum))
 
     try:
-        req_res = requests.get(url)
+        req_res = requests.get(url, verify=False)
         answer = req_res.json()
         if answer['res'] == "ok":
             res['sum'] = answer['sum']
@@ -76,7 +76,7 @@ def get_check_stat(bi_checks_host, date_begin, date_end):
     )
 
     try:
-        req_res = requests.get(url)
+        req_res = requests.get(url, verify=False)
         answer = req_res.json()
         if answer['res'] == "ok":
             res['items'] = answer['items']

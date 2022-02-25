@@ -42,7 +42,7 @@ class TgBotMgr():
     def get_updates(self):
         url = "%s%s/getUpdates" % (self.__tg_api_url, self.__token)
         try:
-            res = requests.get(url)
+            res = requests.get(url, verify=False)
             res = res.json()
             if res['ok'] == True:
                 return res['result']
@@ -86,7 +86,7 @@ class TgBotMgr():
         )
 
         try:
-            res = requests.get(url)
+            res = requests.get(url, verify=False)
             res = res.json()
             if res['ok'] == True:
                 return res['result']
@@ -111,7 +111,7 @@ class TgBotMgr():
 
         try:
             with open(file_path, "rb") as f:
-                res = requests.post(url, data=params, files={'document': f})
+                res = requests.post(url, data=params, files={'document': f}, verify=False)
                 res = res.json()
                 if res['ok'] == True:
                     return res['result']
