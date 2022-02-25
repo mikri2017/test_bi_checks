@@ -36,7 +36,6 @@ while 1:
     res = tg_bot.get_updates()
     if res is False:
         print(tg_bot.get_last_error())
-        exit(1)
 
     for upd in res:
         if upd['update_id'] > last_upd_id:
