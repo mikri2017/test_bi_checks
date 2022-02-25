@@ -143,4 +143,4 @@ while 1:
                         )
 
                 last_upd_id = upd['update_id']
-    sleep(3)
+    sleep(1)
