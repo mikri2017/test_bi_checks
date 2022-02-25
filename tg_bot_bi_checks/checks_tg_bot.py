@@ -1,9 +1,13 @@
 import os
+import urllib3
 from decimal import Decimal
 from time import sleep
 from datetime import datetime
 from tg_bot_mgr import TgBotMgr
 import checks_tg_bot_common as chc
+
+# Отключаем предупреждения об SSL
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Делаем папку расположения скрипта рабочей
 os.chdir(os.path.dirname(__file__))

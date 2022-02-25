@@ -6,6 +6,8 @@ class TgBotMgr():
         self.__tg_api_url = ""
         self.__token = ""
         self.__error_mgr = ""
+        # Отключаем предупреждения об SSL
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
     def get_last_error(self):
