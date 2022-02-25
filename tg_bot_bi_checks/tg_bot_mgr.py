@@ -40,9 +40,21 @@ class TgBotMgr():
 
 
     def get_updates(self):
-        req_url = "%s%s/getUpdates" % (self.__tg_api_url, self.__token)
-        res = requests.get(req_url)
-        return res.json()
+        url = "%s%s/getUpdates" % (self.__tg_api_url, self.__token)
+        try:
+            res = requests.get(url)
+            res = res.json()
+            if res['ok'] == True:
+                return res['result']
+            else:
+                self.__error_mgr = "Ошибка от Telegram API при получении" \
+                    + "обновлений: [%i] %s" % (
+                        res['error_code'], res['description']
+                    )
+                return False
+        except Exception as ex:
+            self.__error_mgr = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            return False
 
 
     def send_msg(self, chat_id, msg, buttons = []):
@@ -67,11 +79,23 @@ class TgBotMgr():
 
         params += "&reply_markup=" + json.dumps(inl_buttons)
 
-        req_url = "%s%s/sendMessage?%s" % (
+        url = "%s%s/sendMessage?%s" % (
             self.__tg_api_url,
             self.__token,
             params
         )
 
-        res = requests.get(req_url)
-        return res.json()
+        try:
+            res = requests.get(url)
+            res = res.json()
+            if res['ok'] == True:
+                return res['result']
+            else:
+                self.__error_mgr = "Ошибка от Telegram API при отправке" \
+                    + " сообщения: [%i] %s" % (
+                        res['error_code'], res['description']
+                    )
+                return False
+        except Exception as ex:
+            self.__error_mgr = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            return False

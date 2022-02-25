@@ -36,7 +36,9 @@ def send_bot_hello_msg(tg_bot, chat_id):
         }
     ]
 
-    return tg_bot.send_msg(chat_id, msg, buttons)
+    res = tg_bot.send_msg(chat_id, msg, buttons)
+    if res is False:
+        print(tg_bot.get_last_error())
 
 
 def add_check(bi_checks_host, sum):
