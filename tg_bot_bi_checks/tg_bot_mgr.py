@@ -42,8 +42,11 @@ class TgBotMgr():
         }
 
 
-    def get_updates(self):
+    def get_updates(self, offset = 0):
         url = "%s%s/getUpdates" % (self.__tg_api_url, self.__token)
+        if offset > 0:
+            url += "?offset=%i" % (offset)
+
         try:
             res = requests.get(url, verify=False)
             res = res.json()
