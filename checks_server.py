@@ -46,7 +46,7 @@ class GetHandler(BaseHTTPRequestHandler):
                         res['msg'] = sales_mgr.get_last_error()
                 else:
                     res['res'] = "err"
-                    res['msg'] = "Сумма проджажи должна быть больше нуля"
+                    res['msg'] = "Сумма продажи должна быть больше нуля"
         elif command == '/get_sale_stat':
             data = {}
             params_list = ["date_begin", "date_end"]
