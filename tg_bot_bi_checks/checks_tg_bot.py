@@ -76,13 +76,14 @@ while 1:
                                         tg_bot.send_msg(res['data']['chat_id'], stat_res['msg'])
                                     else:
                                         # Собираем сообщение с полученной статистикой
-                                        print(stat_res['items'])
-
-                                        info_msg = "Задан период от %s по %s" % (
-                                            date_begin.strftime("%Y-%m-%d"),
-                                            date_end.strftime("%Y-%m-%d")
-                                        )
-                                        tg_bot.send_msg(res['data']['chat_id'], info_msg)
+                                        send_msg = ""
+                                        if len(stat_res['items']) == 0:
+                                            send_msg = "Данных за выбранный период нет"
+                                        else:
+                                            send_msg = chc.gen_check_stat_res_msg(stat_res['items'])
+                                            if send_msg == "":
+                                                send_msg = "Данные отсутствуют"
+                                        tg_bot.send_msg(res['data']['chat_id'], send_msg)
                                 except ValueError:
                                     error_msg = "Даты не соответствуют формату: %s" % (
                                         res['data']['msg']

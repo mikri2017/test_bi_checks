@@ -86,3 +86,29 @@ def get_check_stat(bi_checks_host, date_begin, date_end):
         res['msg'] = "Ошибка получения URL [%s]: %s" % (url, str(ex))
 
     return res
+
+
+def gen_check_stat_res_msg(items):
+    stat_msg = ""
+
+    if len(items) > 0:
+        first = True
+        for key in items[0].keys():
+            if first:
+                stat_msg += str(key)
+                first = False
+            else:
+                stat_msg += ";" + str(key)
+        stat_msg += "\r\n"
+
+        for item in items:
+            first = True
+            for key, data in item.items():
+                if first:
+                    stat_msg += str(data)
+                    first = False
+                else:
+                    stat_msg += ";" + str(data)
+            stat_msg += "\r\n"
+
+    return stat_msg
