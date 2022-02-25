@@ -6,6 +6,7 @@
 * fill_base_random.py - скрипт наполняет таблицу продаж на июль, август рандомными продажами до 1000
 * db_structure/bi_checks.sql - БД проекта под СУБД MariaDB
 * db_structure/bi_checks_test_user.sql - пользователь test с правами на доступ к БД проекта
+* tg_bot_bi_checks/checks_tg_bot.py - Telegram бот, позволяющий вносить продажи и выводить их за период через http сервис checks_server.py
 
 ## Примеры: 
 * http://127.0.0.1:8080/add_check?sum=345,87
