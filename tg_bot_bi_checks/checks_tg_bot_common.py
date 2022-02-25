@@ -114,3 +114,37 @@ def gen_check_stat_res_msg(items):
             stat_msg += "\r\n"
 
     return stat_msg
+
+def gen_check_stat_file(file_path, items):
+    res = {
+        'res': "ok"
+    }
+
+    try:
+        with open(file_path, "w") as f:
+            if len(items) > 0:
+                first = True
+            stat_msg = ""
+            for key in items[0].keys():
+                if first:
+                    stat_msg += str(key)
+                    first = False
+                else:
+                    stat_msg += ";" + str(key)
+            f.write(stat_msg + "\n")
+
+            for item in items:
+                stat_msg = ""
+                first = True
+                for key, data in item.items():
+                    if first:
+                        stat_msg += str(data)
+                        first = False
+                    else:
+                        stat_msg += ";" + str(data)
+                f.write(stat_msg + "\n")
+    except Exception as ex:
+        res['res'] = "err"
+        res['msg'] = "Ошибка записи файла [%s]: %s" % (file_path, str(ex))
+
+    return res

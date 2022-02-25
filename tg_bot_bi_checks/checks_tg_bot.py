@@ -1,8 +1,23 @@
+import os
 from decimal import Decimal
 from time import sleep
 from datetime import datetime
 from tg_bot_mgr import TgBotMgr
 import checks_tg_bot_common as chc
+
+# Делаем папку расположения скрипта рабочей
+os.chdir(os.path.dirname(__file__))
+
+# Проверяем наличие папки под отчеты
+reports_dir = "reports"
+if not os.path.exists(reports_dir):
+    try:
+        os.makedirs(reports_dir)
+    except Exception as ex:
+        error_msg = "Ошибка при попытке создать папку %s: %s" % (
+            reports_dir, str(ex)
+        )
+        print(error_msg)
 
 tg_bot = TgBotMgr()
 
@@ -82,12 +97,27 @@ while 1:
                                     send_msg = ""
                                     if len(stat_res['items']) == 0:
                                         send_msg = "Данных за выбранный период нет"
+                                        if tg_bot.send_msg(res['data']['chat_id'], send_msg) is False:
+                                            print(tg_bot.get_last_error())
                                     else:
-                                        send_msg = chc.gen_check_stat_res_msg(stat_res['items'])
-                                        if send_msg == "":
-                                            send_msg = "Данные отсутствуют"
-                                    if tg_bot.send_msg(res['data']['chat_id'], send_msg) is False:
-                                        print(tg_bot.get_last_error())
+                                        file_name = "checks_%i_%s_%s.csv" % (
+                                            res['data']['chat_id'],
+                                            date_begin.strftime("%Y%m%d"),
+                                            date_end.strftime("%Y%m%d")
+                                        )
+
+                                        file_path = os.path.join(reports_dir, file_name)
+                                        file_res = chc.gen_check_stat_file(file_path, stat_res['items'])
+                                        if file_res['res'] == "err":
+                                            print(file_res['msg'])
+
+                                            error_msg = "Внутрення ошибка, попробуйте снова позже"
+                                            if tg_bot.send_msg(res['data']['chat_id'], error_msg) is False:
+                                                print(tg_bot.get_last_error())
+
+                                        if file_res['res'] == "ok":
+                                            if tg_bot.send_document(res['data']['chat_id'], file_path) is False:
+                                                print(tg_bot.get_last_error())
                             except ValueError:
                                 error_msg = "Даты не соответствуют формату: %s" % (
                                     res['data']['msg']
