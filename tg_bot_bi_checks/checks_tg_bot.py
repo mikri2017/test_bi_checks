@@ -22,6 +22,9 @@ if res['ok'] == True:
 info_msg = "ID последнего обновления: %i" % (last_upd_id)
 print(info_msg)
 
+# Хост сайта http сервиса статистики продаж
+bi_checks_host = "127.0.0.1:8080"
+
 # Состояния пользователей
 users_stat = {}
 
@@ -46,9 +49,12 @@ while 1:
                             msg = res['data']['msg'].replace(',', '.').strip()
                             try:
                                 check_sum = Decimal(msg)
-
-                                info_msg = "Передана сумма %s" % (str(check_sum))
-                                tg_bot.send_msg(res['data']['chat_id'], info_msg)
+                                add_check_res = chc.add_check(bi_checks_host, check_sum)
+                                if add_check_res['res'] == "ok":
+                                    send_msg = "Продажа на сумму %s внесена успешно" % (add_check_res['sum'])
+                                else:
+                                    send_msg = add_check_res['msg']
+                                tg_bot.send_msg(res['data']['chat_id'], send_msg)
                             except Exception as ex:
                                 error_msg = "Передано некорректное значение " \
                                     + "cуммы: %s" % (msg)
@@ -65,11 +71,18 @@ while 1:
                                     date_begin = datetime.strptime(msg_dates[0], "%Y-%m-%d")
                                     date_end = datetime.strptime(msg_dates[1], "%Y-%m-%d")
 
-                                    info_msg = "Задан период от %s по %s" % (
-                                        date_begin.strftime("%Y-%m-%d"),
-                                        date_end.strftime("%Y-%m-%d")
-                                    )
-                                    tg_bot.send_msg(res['data']['chat_id'], info_msg)
+                                    stat_res = chc.get_check_stat(bi_checks_host, date_begin, date_end)
+                                    if stat_res == "err":
+                                        tg_bot.send_msg(res['data']['chat_id'], stat_res['msg'])
+                                    else:
+                                        # Собираем сообщение с полученной статистикой
+                                        print(stat_res['items'])
+
+                                        info_msg = "Задан период от %s по %s" % (
+                                            date_begin.strftime("%Y-%m-%d"),
+                                            date_end.strftime("%Y-%m-%d")
+                                        )
+                                        tg_bot.send_msg(res['data']['chat_id'], info_msg)
                                 except ValueError:
                                     error_msg = "Даты не соответствуют формату: %s" % (
                                         res['data']['msg']
