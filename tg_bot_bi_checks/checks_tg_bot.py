@@ -52,7 +52,7 @@ users_stat = {}
 
 while 1:
     # Проверяем на наличие новых запросов
-    res = tg_bot.get_updates()
+    res = tg_bot.get_updates(last_upd_id)
     if res is False:
         print(tg_bot.get_last_error())
 
