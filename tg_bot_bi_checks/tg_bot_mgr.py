@@ -208,6 +208,8 @@ class TgBotMgr():
                     first = False
                 else:
                     msg += "\n%s" % (caption)
+
+                f_img.close()
         except Exception as ex:
             self.__error_mgr = "Ошибка получения URL [%s]: %s" % (url, str(ex))
             return False
