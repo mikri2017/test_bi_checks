@@ -100,7 +100,7 @@ class TgBotMgr():
             res = requests.get(url, params=params, verify=False)
             res = res.json()
             if res['ok'] == True:
-                return res['result']
+                return [res['result']]
             else:
                 self.__error_mgr = "Ошибка от Telegram API при отправке" \
                     + " сообщения: [%i] %s" % (
@@ -129,7 +129,7 @@ class TgBotMgr():
                 res = requests.post(url, data=params, files={'document': f}, verify=False)
                 res = res.json()
                 if res['ok'] == True:
-                    return res['result']
+                    return [res['result']]
                 else:
                     self.__error_mgr = "Ошибка от Telegram API при отправке" \
                         + " файла %s: [%i] %s" % (
@@ -158,7 +158,7 @@ class TgBotMgr():
                 res = requests.post(url, data=params, files={'photo': f}, verify=False)
                 res = res.json()
                 if res['ok'] == True:
-                    return res['result']
+                    return [res['result']]
                 else:
                     self.__error_mgr = "Ошибка от Telegram API при отправке" \
                         + " файла %s: [%i] %s" % (
