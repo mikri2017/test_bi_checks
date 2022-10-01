@@ -141,6 +141,35 @@ class TgBotMgr():
             return False
 
 
+    def send_document_by_file_id(self, chat_id, file_id, caption = ""):
+        url = "%s%s/sendDocument" % (
+            self.__tg_api_url,
+            self.__token
+        )
+
+        params = {
+            'chat_id': chat_id,
+            'parse_mode': "HTML",
+            'document': file_id,
+            'caption': caption
+        }
+
+        try:
+            res = requests.get(url, params=params, verify=False)
+            res = res.json()
+            if res['ok'] == True:
+                return [res['result']]
+            else:
+                self.__error_mgr = "Ошибка от Telegram API при отправке" \
+                    + " сообщения: [%i] %s" % (
+                        res['error_code'], res['description']
+                    )
+                return False
+        except Exception as ex:
+            self.__error_mgr = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            return False
+
+
     def send_photo(self, chat_id, file_path, caption = ""):
         url = "%s%s/sendPhoto" % (
             self.__tg_api_url,
@@ -165,6 +194,38 @@ class TgBotMgr():
                             file_path, res['error_code'], res['description']
                         )
                     return False
+        except Exception as ex:
+            self.__error_mgr = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            return False
+
+
+    def send_photo_by_file_id(self, chat_id, file_id, caption = ""):
+        """Отправка фото по file_id от Telegram
+        """
+
+        url = "%s%s/sendPhoto" % (
+            self.__tg_api_url,
+            self.__token
+        )
+
+        params = {
+            'chat_id': chat_id,
+            'parse_mode': "HTML",
+            'photo': file_id,
+            'caption': caption
+        }
+
+        try:
+            res = requests.get(url, params=params, verify=False)
+            res = res.json()
+            if res['ok'] == True:
+                return [res['result']]
+            else:
+                self.__error_mgr = "Ошибка от Telegram API при отправке" \
+                    + " сообщения: [%i] %s" % (
+                        res['error_code'], res['description']
+                    )
+                return False
         except Exception as ex:
             self.__error_mgr = "Ошибка получения URL [%s]: %s" % (url, str(ex))
             return False
@@ -229,6 +290,62 @@ class TgBotMgr():
             else:
                 self.__error_mgr = "Ошибка от Telegram API при отправке" \
                     + " группы фото: [%i] %s" % (
+                        res['error_code'], res['description']
+                    )
+                return False
+        except Exception as ex:
+            self.__error_mgr = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            return False
+
+
+    def send_media_group_photos_by_file_id(self, chat_id, file_ids_with_captions):
+        """Отправка группы фотографий в виде альбома
+        :param chat_id: ID чата для отправки
+        :param file_ids_with_captions: Словарь "Подпись": file_id
+        :return: Словарь результатов или False при ошибке
+        """
+
+        url = "%s%s/sendMediaGroup" % (
+            self.__tg_api_url,
+            self.__token
+        )
+    
+        files = {}
+        media = []
+
+        msg = ""
+        first = True
+        for caption, file_id in file_ids_with_captions.items():
+            media.append(
+                dict(
+                    type='photo',
+                    media=file_id,
+                    parse_mode="HTML",
+                    caption=caption
+                )
+            )
+
+            if first:
+                msg += caption
+                first = False
+            else:
+                msg += "\n%s" % (caption)
+
+        params = {
+            'chat_id': chat_id,
+            'media': json.dumps(media),
+            'parse_mode': "HTML",
+            'caption': msg
+        }
+
+        try:
+            res = requests.get(url, data=params, verify=False)
+            res = res.json()
+            if res['ok'] == True:
+                return res['result']
+            else:
+                self.__error_mgr = "Ошибка от Telegram API при отправке" \
+                    + " группы фото по их file_id: [%i] %s" % (
                         res['error_code'], res['description']
                     )
                 return False
