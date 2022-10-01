@@ -107,17 +107,49 @@ class TgBotMgr():
             return False
 
 
-    def send_document(self, chat_id, file_path):
+    def send_document(self, chat_id, file_path, caption = ""):
         url = "%s%s/sendDocument" % (
             self.__tg_api_url,
             self.__token
         )
 
-        params = {'chat_id': chat_id}
+        params = {
+            'chat_id': chat_id,
+            'parse_mode': "HTML",
+            'caption': caption
+        }
 
         try:
             with open(file_path, "rb") as f:
                 res = requests.post(url, data=params, files={'document': f}, verify=False)
+                res = res.json()
+                if res['ok'] == True:
+                    return res['result']
+                else:
+                    self.__error_mgr = "Ошибка от Telegram API при отправке" \
+                        + " файла %s: [%i] %s" % (
+                            file_path, res['error_code'], res['description']
+                        )
+                    return False
+        except Exception as ex:
+            self.__error_mgr = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            return False
+
+    def send_photo(self, chat_id, file_path, caption = ""):
+        url = "%s%s/sendPhoto" % (
+            self.__tg_api_url,
+            self.__token
+        )
+
+        params = {
+            'chat_id': chat_id,
+            'parse_mode': "HTML",
+            'caption': caption
+        }
+
+        try:
+            with open(file_path, "rb") as f:
+                res = requests.post(url, data=params, files={'photo': f}, verify=False)
                 res = res.json()
                 if res['ok'] == True:
                     return res['result']
