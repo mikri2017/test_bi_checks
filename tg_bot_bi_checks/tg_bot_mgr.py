@@ -8,20 +8,20 @@ class TgBotMgr():
     def __init__(self):
         self.__tg_api_url = ""
         self.__token = ""
-        self.__error_mgr = ""
+        self.__error_msg = ""
         # Отключаем предупреждения об SSL
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
     def get_last_error(self):
-        return self.__error_mgr
+        return self.__error_msg
 
 
     def set_api_url(self, api_url):
         if api_url != "":
             self.__tg_api_url = api_url
         else:
-            self.__error_mgr = "URL API Telegram бота не может быть пустым!"
+            self.__error_msg = "URL API Telegram бота не может быть пустым!"
             return False
 
         return True
@@ -31,7 +31,7 @@ class TgBotMgr():
         if token != "":
             self.__token = token
         else:
-            self.__error_mgr = "Token API Telegram не может быть пустым!"
+            self.__error_msg = "Token API Telegram не может быть пустым!"
             return False
 
         return True
@@ -55,13 +55,13 @@ class TgBotMgr():
             if res['ok'] == True:
                 return res['result']
             else:
-                self.__error_mgr = "Ошибка от Telegram API при получении" \
+                self.__error_msg = "Ошибка от Telegram API при получении" \
                     + "обновлений: [%i] %s" % (
                         res['error_code'], res['description']
                     )
                 return False
         except Exception as ex:
-            self.__error_mgr = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            self.__error_msg = "Ошибка получения URL [%s]: %s" % (url, str(ex))
             return False
 
 
@@ -89,9 +89,7 @@ class TgBotMgr():
         }
 
         inl_buttons = {
-            'inline_keyboard': [
-                buttons
-            ]
+            'inline_keyboard': buttons
         }
 
         params['reply_markup'] = json.dumps(inl_buttons)
@@ -102,13 +100,13 @@ class TgBotMgr():
             if res['ok'] == True:
                 return [res['result']]
             else:
-                self.__error_mgr = "Ошибка от Telegram API при отправке" \
+                self.__error_msg = "Ошибка от Telegram API при отправке" \
                     + " сообщения: [%i] %s" % (
                         res['error_code'], res['description']
                     )
                 return False
         except Exception as ex:
-            self.__error_mgr = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            self.__error_msg = "Ошибка получения URL [%s]: %s" % (url, str(ex))
             return False
 
 
@@ -131,13 +129,13 @@ class TgBotMgr():
                 if res['ok'] == True:
                     return [res['result']]
                 else:
-                    self.__error_mgr = "Ошибка от Telegram API при отправке" \
+                    self.__error_msg = "Ошибка от Telegram API при отправке" \
                         + " файла %s: [%i] %s" % (
                             file_path, res['error_code'], res['description']
                         )
                     return False
         except Exception as ex:
-            self.__error_mgr = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            self.__error_msg = "Ошибка получения URL [%s]: %s" % (url, str(ex))
             return False
 
 
@@ -160,13 +158,13 @@ class TgBotMgr():
             if res['ok'] == True:
                 return [res['result']]
             else:
-                self.__error_mgr = "Ошибка от Telegram API при отправке" \
+                self.__error_msg = "Ошибка от Telegram API при отправке" \
                     + " сообщения: [%i] %s" % (
                         res['error_code'], res['description']
                     )
                 return False
         except Exception as ex:
-            self.__error_mgr = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            self.__error_msg = "Ошибка получения URL [%s]: %s" % (url, str(ex))
             return False
 
 
@@ -189,13 +187,13 @@ class TgBotMgr():
                 if res['ok'] == True:
                     return [res['result']]
                 else:
-                    self.__error_mgr = "Ошибка от Telegram API при отправке" \
+                    self.__error_msg = "Ошибка от Telegram API при отправке" \
                         + " файла %s: [%i] %s" % (
                             file_path, res['error_code'], res['description']
                         )
                     return False
         except Exception as ex:
-            self.__error_mgr = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            self.__error_msg = "Ошибка получения URL [%s]: %s" % (url, str(ex))
             return False
 
 
@@ -221,13 +219,13 @@ class TgBotMgr():
             if res['ok'] == True:
                 return [res['result']]
             else:
-                self.__error_mgr = "Ошибка от Telegram API при отправке" \
+                self.__error_msg = "Ошибка от Telegram API при отправке" \
                     + " сообщения: [%i] %s" % (
                         res['error_code'], res['description']
                     )
                 return False
         except Exception as ex:
-            self.__error_mgr = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            self.__error_msg = "Ошибка получения URL [%s]: %s" % (url, str(ex))
             return False
 
 
@@ -272,7 +270,7 @@ class TgBotMgr():
 
                 f_img.close()
         except Exception as ex:
-            self.__error_mgr = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            self.__error_msg = "Ошибка получения URL [%s]: %s" % (url, str(ex))
             return False
 
         params = {
@@ -288,13 +286,13 @@ class TgBotMgr():
             if res['ok'] == True:
                 return res['result']
             else:
-                self.__error_mgr = "Ошибка от Telegram API при отправке" \
+                self.__error_msg = "Ошибка от Telegram API при отправке" \
                     + " группы фото: [%i] %s" % (
                         res['error_code'], res['description']
                     )
                 return False
         except Exception as ex:
-            self.__error_mgr = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            self.__error_msg = "Ошибка получения URL [%s]: %s" % (url, str(ex))
             return False
 
 
@@ -344,11 +342,11 @@ class TgBotMgr():
             if res['ok'] == True:
                 return res['result']
             else:
-                self.__error_mgr = "Ошибка от Telegram API при отправке" \
+                self.__error_msg = "Ошибка от Telegram API при отправке" \
                     + " группы фото по их file_id: [%i] %s" % (
                         res['error_code'], res['description']
                     )
                 return False
         except Exception as ex:
-            self.__error_mgr = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            self.__error_msg = "Ошибка получения URL [%s]: %s" % (url, str(ex))
             return False

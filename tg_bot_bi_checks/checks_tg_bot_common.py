@@ -26,14 +26,16 @@ def send_bot_hello_msg(tg_bot, chat_id):
     msg = "Выберите дейсвие"
 
     buttons = [
-        {
-            'text': "Внести продажу",
-            'callback_data': "add_check"
-        },
-        {
-            'text': "Продажи за период",
-            'callback_data': "get_report"
-        }
+        [
+            {
+                'text': "Внести продажу",
+                'callback_data': "add_check"
+            },
+            {
+                'text': "Продажи за период",
+                'callback_data': "get_report"
+            }
+        ]
     ]
 
     res = tg_bot.send_msg(chat_id, msg, buttons)
