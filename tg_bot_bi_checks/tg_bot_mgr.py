@@ -49,8 +49,10 @@ class TgBotMgr():
         if offset > 0:
             url += "?offset=%i" % (offset)
 
+        res_str = ""
         try:
             res = requests.get(url, verify=False)
+            res_str = res.text
             res = res.json()
             if res['ok'] == True:
                 return res['result']
@@ -61,7 +63,12 @@ class TgBotMgr():
                     )
                 return False
         except Exception as ex:
-            self.__error_msg = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            self.__error_msg = "Ошибка получения URL [%s]: %s\n%s" % (
+                url,
+                str(ex),
+                res_str
+            )
+
             return False
 
 
@@ -94,8 +101,10 @@ class TgBotMgr():
 
         params['reply_markup'] = json.dumps(inl_buttons)
 
+        res_str = ""
         try:
             res = requests.get(url, params=params, verify=False)
+            res_str = res.text
             res = res.json()
             if res['ok'] == True:
                 return [res['result']]
@@ -106,7 +115,12 @@ class TgBotMgr():
                     )
                 return False
         except Exception as ex:
-            self.__error_msg = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            self.__error_msg = "Ошибка получения URL [%s]: %s\n%s" % (
+                url,
+                str(ex),
+                res_str
+            )
+
             return False
 
 
@@ -139,8 +153,10 @@ class TgBotMgr():
 
         params['reply_markup'] = json.dumps(inl_buttons)
 
+        res_str = ""
         try:
             res = requests.get(url, params=params, verify=False)
+            res_str = res.text
             res = res.json()
             if res['ok'] == True:
                 return [res['result']]
@@ -151,7 +167,12 @@ class TgBotMgr():
                     )
                 return False
         except Exception as ex:
-            self.__error_msg = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            self.__error_msg = "Ошибка получения URL [%s]: %s\n%s" % (
+                url,
+                str(ex),
+                res_str
+            )
+
             return False
 
 
@@ -167,9 +188,11 @@ class TgBotMgr():
             'caption': caption
         }
 
+        res_str = ""
         try:
             with open(file_path, "rb") as f:
                 res = requests.post(url, data=params, files={'document': f}, verify=False)
+                res_str = res.text
                 res = res.json()
                 if res['ok'] == True:
                     return [res['result']]
@@ -180,7 +203,12 @@ class TgBotMgr():
                         )
                     return False
         except Exception as ex:
-            self.__error_msg = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            self.__error_msg = "Ошибка получения URL [%s]: %s\n%s" % (
+                url,
+                str(ex),
+                res_str
+            )
+
             return False
 
 
@@ -197,8 +225,10 @@ class TgBotMgr():
             'caption': caption
         }
 
+        res_str = ""
         try:
             res = requests.get(url, params=params, verify=False)
+            res_str = res.text
             res = res.json()
             if res['ok'] == True:
                 return [res['result']]
@@ -209,7 +239,12 @@ class TgBotMgr():
                     )
                 return False
         except Exception as ex:
-            self.__error_msg = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            self.__error_msg = "Ошибка получения URL [%s]: %s\n%s" % (
+                url,
+                str(ex),
+                res_str
+            )
+
             return False
 
 
@@ -225,9 +260,11 @@ class TgBotMgr():
             'caption': caption
         }
 
+        res_str = ""
         try:
             with open(file_path, "rb") as f:
                 res = requests.post(url, data=params, files={'photo': f}, verify=False)
+                res_str = res.text
                 res = res.json()
                 if res['ok'] == True:
                     return [res['result']]
@@ -238,7 +275,12 @@ class TgBotMgr():
                         )
                     return False
         except Exception as ex:
-            self.__error_msg = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            self.__error_msg = "Ошибка получения URL [%s]: %s\n%s" % (
+                url,
+                str(ex),
+                res_str
+            )
+
             return False
 
 
@@ -258,8 +300,10 @@ class TgBotMgr():
             'caption': caption
         }
 
+        res_str = ""
         try:
             res = requests.get(url, params=params, verify=False)
+            res_str = res.text
             res = res.json()
             if res['ok'] == True:
                 return [res['result']]
@@ -270,7 +314,12 @@ class TgBotMgr():
                     )
                 return False
         except Exception as ex:
-            self.__error_msg = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            self.__error_msg = "Ошибка получения URL [%s]: %s\n%s" % (
+                url,
+                str(ex),
+                res_str
+            )
+
             return False
 
 
@@ -315,7 +364,8 @@ class TgBotMgr():
 
                 f_img.close()
         except Exception as ex:
-            self.__error_msg = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            self.__error_msg = "Ошибка при подготовке фотографий к " \
+                + "отправке: %s" % (str(ex))
             return False
 
         params = {
@@ -325,8 +375,10 @@ class TgBotMgr():
             'caption': msg
         }
 
+        res_str = ""
         try:
             res = requests.post(url, data=params, files=files, verify=False)
+            res_str = res.text
             res = res.json()
             if res['ok'] == True:
                 return res['result']
@@ -337,7 +389,12 @@ class TgBotMgr():
                     )
                 return False
         except Exception as ex:
-            self.__error_msg = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            self.__error_msg = "Ошибка получения URL [%s]: %s\n%s" % (
+                url,
+                str(ex),
+                res_str
+            )
+
             return False
 
 
@@ -381,8 +438,10 @@ class TgBotMgr():
             'caption': msg
         }
 
+        res_str = ""
         try:
             res = requests.get(url, data=params, verify=False)
+            res_str = res.text
             res = res.json()
             if res['ok'] == True:
                 return res['result']
@@ -393,5 +452,10 @@ class TgBotMgr():
                     )
                 return False
         except Exception as ex:
-            self.__error_msg = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            self.__error_msg = "Ошибка получения URL [%s]: %s\n%s" % (
+                url,
+                str(ex),
+                res_str
+            )
+
             return False
