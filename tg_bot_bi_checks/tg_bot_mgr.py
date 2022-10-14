@@ -56,7 +56,7 @@ class TgBotMgr():
                 return res['result']
             else:
                 self.__error_msg = "Ошибка от Telegram API при получении" \
-                    + "обновлений: [%i] %s" % (
+                    + " обновлений: [%i] %s" % (
                         res['error_code'], res['description']
                     )
                 return False
@@ -86,6 +86,51 @@ class TgBotMgr():
             'chat_id': chat_id,
             'parse_mode': "HTML",
             'text': msg
+        }
+
+        inl_buttons = {
+            'inline_keyboard': buttons
+        }
+
+        params['reply_markup'] = json.dumps(inl_buttons)
+
+        try:
+            res = requests.get(url, params=params, verify=False)
+            res = res.json()
+            if res['ok'] == True:
+                return [res['result']]
+            else:
+                self.__error_msg = "Ошибка от Telegram API при отправке" \
+                    + " сообщения: [%i] %s" % (
+                        res['error_code'], res['description']
+                    )
+                return False
+        except Exception as ex:
+            self.__error_msg = "Ошибка получения URL [%s]: %s" % (url, str(ex))
+            return False
+
+
+    def edt_msg_reply_markup(self, chat_id, msg_id, buttons = []):
+        """Редактирование дополнений к сообщению
+
+        :param chat_id: ID чата для отправки
+        :param msg_id: ID сообщения
+        :param buttons: Массив словарей для добавления к сообщению кнопок,
+                        поля 'text' - подпись кнопки,
+                        'callback_data' - идентификатор до 64 байт, для
+                        опознания запрошенного пользователем действия
+        :return: Словарь результатов или False при ошибке
+        """
+
+        url = "%s%s/editMessageReplyMarkup" % (
+            self.__tg_api_url,
+            self.__token
+        )
+
+        params = {
+            'chat_id': chat_id,
+            'message_id': msg_id,
+            'parse_mode': "HTML"
         }
 
         inl_buttons = {
